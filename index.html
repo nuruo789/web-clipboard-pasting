@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+   <head>
+      <meta charset="UTF-8" />
+   </head>
+   <body onload="onloadProcess();">
+      Please give permission to paste to clipboard
+   </body>
+
+   <script>
+      function onloadProcess() {
+         const searchParams = new URLSearchParams(window.location.search); //get query
+         const token = searchParams.get('t');
+         if (token) {
+            setClipboard(token);
+         }
+      }
+
+      function setClipboard(text) {
+         const type = 'text/plain';
+         const blob = new Blob([text], { type });
+         const data = [new ClipboardItem({ [type]: blob })];
+
+         navigator.clipboard.write(data).then(
+            () => {
+               /* success */
+               setTimeout(window.close, 1000); //wait clipboard is complete and window close
+            },
+            () => {
+               /* failure */
+               console.log('failure');
+            }
+         );
+      }
+   </script>
+</html>
