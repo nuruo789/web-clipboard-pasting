@@ -1,36 +1,49 @@
 <!DOCTYPE html>
 <html lang="ja">
-   <head>
-      <meta charset="UTF-8" />
-   </head>
-   <body onload="onloadProcess();">
-      Please give permission to paste to clipboard
-   </body>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body onload="onloadProcess();">
+    <p id="message">Please give permission to paste to clipboard.</p>
+  </body>
 
-   <script>
-      function onloadProcess() {
-         const searchParams = new URLSearchParams(window.location.search); //get query
-         const token = searchParams.get('t');
-         if (token) {
-            setClipboard(token);
-         }
+  <script>
+    const messageElement = document.getElementById("message");
+    function onloadProcess() {
+      const searchParams = new URLSearchParams(window.location.search); //get query
+      const token = searchParams.get("t");
+      if (token) {
+        setClipboard(token);
       }
+    }
 
-      function setClipboard(text) {
-         const type = 'text/plain';
-         const blob = new Blob([text], { type });
-         const data = [new ClipboardItem({ [type]: blob })];
+    function setClipboard(text) {
+      navigator.clipboard.writeText(text).then(
+        () => {
+          /* success */
+          messageElement.innerText =
+            "Successfully pasted the clipboard.\n Please close this page.";
+          messageElement.style.color = "blue";
+        },
+        () => {
+          /* failure */
+          console.log("failure");
+        }
+      );
+    }
+  </script>
 
-         navigator.clipboard.write(data).then(
-            () => {
-               /* success */
-               setTimeout(window.close, 1000); //wait clipboard is complete and window close
-            },
-            () => {
-               /* failure */
-               console.log('failure');
-            }
-         );
-      }
-   </script>
+  <style type="text/css">
+    body {
+      background-color: #ccc;
+    }
+    #message {
+      margin: 50vh auto 0;
+      transform: translateY(-50%);
+      text-align: center;
+      font-size: 25px;
+      font-weight: bold;
+      color: black;
+    }
+  </style>
 </html>
